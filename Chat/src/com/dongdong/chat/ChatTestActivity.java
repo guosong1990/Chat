@@ -2,6 +2,7 @@ package com.dongdong.chat;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,6 +54,13 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 	TextView tv_chat_title;
 	
 	String city = "";
+	
+	String[] salve = {"小冰","欢欢","豆豆","朵儿","小希","馨儿"};
+	String[] selfName ={"张三","李四","王五","猪八戒","狗娃子","兔崽子"};
+	Random r = new Random();
+	int index = r.nextInt(6);
+	//此处用来添加名字
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
