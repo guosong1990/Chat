@@ -73,9 +73,9 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		lv_id = (ListView)findViewById(R.id.lv_id);
 		
 		tv_chat_title = (TextView)findViewById(R.id.tv_chat_title);
-		MyCity myCity = new MyCity();
+/*		MyCity myCity = new MyCity();
 		city = myCity.getCurrentCityName();
-		Log.e("city------->", city);
+		Log.e("city------->", city);*/
 	}
 
 	@Override
@@ -368,6 +368,8 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 	private void sendMsg(){
 		ChatMessage cm = new ChatMessage();
 		cm.chatMsg = et_id.getText().toString();
+		Log.e("每次发送信息的内容", cm.chatMsg);
+		
 		cm.nickName = "nickName"+ l_msg.size()%2;
 		cm.userID = l_msg.size()%2;
 		Log.v("_____________", "msg="+cm.chatMsg+"|nickName="+cm.nickName+"|userID="+cm.userID);
@@ -379,7 +381,7 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 			chatMessageListAdapter.setL(l_msg);
 			chatMessageListAdapter.notifyDataSetChanged();
 		}
-		et_id.setText("");
+		et_id.setText("[#10]");
 	}
 	/**
 	 * 点击发送事件
