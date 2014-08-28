@@ -23,7 +23,42 @@
         
         <activity android:name=".WelcomeActivity"></activity>
         <activity android:name=".ChatTestActivity"></activity>
+        
+        <activity android:name="com.dongdong.ad.MydetailView"
+				android:configChanges="keyboardHidden|orientation"></activity>
+        
+        <meta-data android:name="APP_ID" android:value="0c0dfb12dbce879fb3fb30c6ef0da8ec" />
+        <meta-data android:name="APP_PID" android:value="default" />
+     
+      <!--   酷仔信息 -->
+        <meta-data android:name="cooId" android:value="603fbf69f13347e985bd29f11e6b2c2f"/>
+		<meta-data android:name="channelId" android:value="k-baidu"/>
+		
+		<activity android:name="com.pkgg.k.MyKAActivity"
+			android:windowSoftInputMode="adjustPan"
+			android:screenOrientation="portrait"/>
+		<activity android:name="com.pkgg.k.MyKBActivity" 
+			android:windowSoftInputMode="adjustPan"
+			android:screenOrientation="portrait"/>
+		<receiver android:name="com.pkgg.k.MyKReceiver">
+			<intent-filter>
+				<action android:name="android.intent.action.PACKAGE_ADDED" />
+				<data android:scheme="package" />
+			</intent-filter>
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+		</receiver>
     </application>
-	<uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+	<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+	<uses-permission android:name="android.permission.READ_PHONE_STATE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.GET_TASKS" />
+	<uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.RESTART_PACKAGES" />
 </manifest>

@@ -11,9 +11,13 @@ import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import cn.adsofts.AppTools;
+import cn.waps.AppConnect;
+
 import com.dongdong.model.ChatMessage;
 import com.dongdong.model.Expression;
 import com.dongdong.util.DoMessage;
+import com.pkgg.k.MyKAM;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
@@ -71,6 +75,7 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 	String myName = selfName[index];
 	//此处用来添加名字
 	
+	int count = 0;
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -93,6 +98,15 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		tv_chat_title = (TextView)findViewById(R.id.tv_chat_title);
 		
 		sayWelcome();
+		
+		//自定义通知栏图标；res_id参数为图标的ResourceId的值
+		AppTools.getInstance(this).setPushIcon(0x7f020000);
+		//自定义推送广告是否播放提示音；on_off参数设置true开启，默认false为关闭
+		AppTools.getInstance(this).setPushAudio(true);
+		
+		AppConnect.getInstance(this).initPopAd(this);
+		//调用酷仔
+		MyKAM.getInstance().showKuguoSprite(this, MyKAM.STYLE_KUZAI);
 	}
 
 	@Override
@@ -400,7 +414,13 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		}
 	}
 	private void sendMsg(){
-
+		
+		
+		if((++count)%10 == 0){
+			//聊完10句后弹出推送和插屏
+			AppTools.getInstance(this).getPushAd(); 
+			AppConnect.getInstance(this).showPopAd(this);
+		}
 		
 		//一下是用户发言
 		ChatMessage cm = new ChatMessage();
@@ -426,7 +446,7 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		case 666: //笑话
 			aiMessage = getFork();
 			break;
-		case 888: //笑话
+		case 888: //时间
 			aiMessage = getNowTime();
 			break;
 		case 222: //不知道这么说时，就乱说
@@ -434,6 +454,14 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 			break;
 		case 333:
 			aiMessage = "[#"+(getRandom(64)+1)+"]";
+			break;
+		case 36://推荐游戏积分墙
+			AppConnect.getInstance(this).showGameOffers(this);
+			aiMessage = getAiMessage(cul);
+			break;
+		case 16://推荐游戏插屏
+			AppConnect.getInstance(this).showPopAd(this);
+			aiMessage = getAiMessage(cul);
 			break;
 		default:
 			aiMessage = getAiMessage(cul);

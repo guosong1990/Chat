@@ -126,7 +126,10 @@ public class DoMessage {
 		}
 		
 		else if (message.contains("傻")||message.contains("笨")) {
-			return 34;
+			return 35;
+		}
+		else if (message.contains("游戏")||message.contains("应用")) {
+			return 36;
 		}
 		else {
 			return 222;//无法判断说什么的时候
