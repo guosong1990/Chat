@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class ChatTestActivity extends Activity implements OnClickListener {
 	public static ChatTestActivity self;
@@ -65,6 +66,9 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 	String[] selfName ={"张三","李四","王五","猪八戒","狗娃子","兔崽子"};
 	Random r = new Random();
 	int index = r.nextInt(6);
+	
+	String robat = salve[index];
+	String myName = selfName[index];
 	//此处用来添加名字
 	
 	@Override
@@ -384,7 +388,7 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 	
 		ChatMessage ai = new ChatMessage();
 		ai.chatMsg = aiMessage;
-		ai.nickName = "小冰";
+		ai.nickName = robat;
 		ai.userID = 1;
 		this.l_msg.add(ai);
 		if(null==chatMessageListAdapter){
@@ -401,7 +405,7 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		//一下是用户发言
 		ChatMessage cm = new ChatMessage();
 		cm.chatMsg = et_id.getText().toString();
-		cm.nickName = "nickName";
+		cm.nickName = myName;
 		cm.userID = 0;
 		Log.v("_____________", "msg="+cm.chatMsg+"|nickName="+cm.nickName+"|userID="+cm.userID);
 		this.l_msg.add(cm);
@@ -425,6 +429,12 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		case 888: //笑话
 			aiMessage = getNowTime();
 			break;
+		case 222: //不知道这么说时，就乱说
+			aiMessage = getDefaultReply();
+			break;
+		case 333:
+			aiMessage = "[#"+(getRandom(64)+1)+"]";
+			break;
 		default:
 			aiMessage = getAiMessage(cul);
 			break;
@@ -443,6 +453,31 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 			chatMessageListAdapter.setL(l_msg);
 			chatMessageListAdapter.notifyDataSetChanged();
 		}
+	}
+	
+	public String getDefaultReply(){
+		Random r = new Random();
+		int index = r.nextInt(98)+1;//看defaultReply 中的行数
+		InputStream inputStream = getResources().openRawResource(R.raw.defaultreply); 
+		String line = "主人,我没听到了...嘻嘻";
+		try {
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);  
+		    int count = 0;
+		    while ((line = reader.readLine()) != null) {  
+	            count++;
+	            if(count == index){
+	            	break;
+	            }
+	        }  
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		 return line;
 	}
 	public String getNowTime(){
 		 Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。 
@@ -511,6 +546,12 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		}  
 		 return line;
 	}
+	
+	public int getRandom(int max){
+		Random random = new Random();
+		return random.nextInt(max);
+	}
+	
 	/**
 	 * 点击发送事件
 	 */
@@ -526,7 +567,12 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 				}
 				break;
 			case R.id.tv_send_msg:
-				sendMsg();
+				if (et_id.getText().toString()!=null&&!et_id.getText().toString().equals("")) {
+					sendMsg();
+				}else {
+					Toast.makeText(this, "发送信息不能为空", 2).show();
+				}
+				
 				break;
 		}
 	}
