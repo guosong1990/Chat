@@ -1,5 +1,10 @@
 package com.dongdong.chat;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -8,7 +13,7 @@ import java.util.regex.Pattern;
 
 import com.dongdong.model.ChatMessage;
 import com.dongdong.model.Expression;
-import com.dongdong.model.MyCity;
+import com.dongdong.util.DoMessage;
 
 import android.app.Activity;
 import android.graphics.BitmapFactory;
@@ -17,6 +22,7 @@ import android.support.v4.view.ViewPager;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.format.Time;
 import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
@@ -81,9 +87,8 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		lv_id = (ListView)findViewById(R.id.lv_id);
 		
 		tv_chat_title = (TextView)findViewById(R.id.tv_chat_title);
-/*		MyCity myCity = new MyCity();
-		city = myCity.getCurrentCityName();
-		Log.e("city------->", city);*/
+		
+		sayWelcome();
 	}
 
 	@Override
@@ -372,14 +377,32 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 		expressionList.add(exp63);
 		expressionList.add(exp64);
 	}
-
+	public void sayWelcome(){
+		//以下是机器发言
+		//晓得到小冰应该说的
+		String aiMessage = getAiMessage(1);
+	
+		ChatMessage ai = new ChatMessage();
+		ai.chatMsg = aiMessage;
+		ai.nickName = "小冰";
+		ai.userID = 1;
+		this.l_msg.add(ai);
+		if(null==chatMessageListAdapter){
+			chatMessageListAdapter = new ChatMessageListAdapter(l_msg, this);
+			lv_id.setAdapter(chatMessageListAdapter);
+		}else{
+			chatMessageListAdapter.setL(l_msg);
+			chatMessageListAdapter.notifyDataSetChanged();
+		}
+	}
 	private void sendMsg(){
+
+		
+		//一下是用户发言
 		ChatMessage cm = new ChatMessage();
 		cm.chatMsg = et_id.getText().toString();
-		Log.e("每次发送信息的内容", cm.chatMsg);
-		
-		cm.nickName = "nickName"+ l_msg.size()%2;
-		cm.userID = l_msg.size()%2;
+		cm.nickName = "nickName";
+		cm.userID = 0;
 		Log.v("_____________", "msg="+cm.chatMsg+"|nickName="+cm.nickName+"|userID="+cm.userID);
 		this.l_msg.add(cm);
 		if(null==chatMessageListAdapter){
@@ -389,7 +412,104 @@ public class ChatTestActivity extends Activity implements OnClickListener {
 			chatMessageListAdapter.setL(l_msg);
 			chatMessageListAdapter.notifyDataSetChanged();
 		}
-		et_id.setText("[#10]");
+		et_id.setText("");
+		
+		//以下是机器发言
+		//晓得到小冰应该说的
+		int cul = new DoMessage(cm.chatMsg).syaWhat();
+		String aiMessage = "我无话可说了...";
+		switch (cul) {
+		case 666: //笑话
+			aiMessage = getFork();
+			break;
+		case 888: //笑话
+			aiMessage = getNowTime();
+			break;
+		default:
+			aiMessage = getAiMessage(cul);
+			break;
+		}
+		
+	
+		ChatMessage ai = new ChatMessage();
+		ai.chatMsg = aiMessage;
+		ai.nickName = "小冰";
+		ai.userID = 1;
+		this.l_msg.add(ai);
+		if(null==chatMessageListAdapter){
+			chatMessageListAdapter = new ChatMessageListAdapter(l_msg, this);
+			lv_id.setAdapter(chatMessageListAdapter);
+		}else{
+			chatMessageListAdapter.setL(l_msg);
+			chatMessageListAdapter.notifyDataSetChanged();
+		}
+	}
+	public String getNowTime(){
+		 Time t=new Time(); // or Time t=new Time("GMT+8"); 加上Time Zone资料。 
+
+	        Time time = new Time("GMT+8");    
+	        time.setToNow();   
+	        int year = time.year;   
+	        int month = time.month;   
+	        int day = time.monthDay;   
+	        int minute = time.minute;   
+	        int hour = time.hour;   
+	        int sec = time.second;   
+	        return "当前时间为: \n" + year +    
+	                            "年 " + month +    
+	                            "月 " + day +    
+	                            "日 " + hour +    
+	                            "时 " + minute +    
+	                            "分 " + sec +    
+	                            "秒";
+	      
+	}
+	public String getFork(){
+		Random r = new Random();
+		int index = r.nextInt(25)+1;//看fork 中的行数
+		InputStream inputStream = getResources().openRawResource(R.raw.fork); 
+		String line = "主人没找到笑话";
+		try {
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);  
+		    int count = 0;
+		    while ((line = reader.readLine()) != null) {  
+	            count++;
+	            if(count == index){
+	            	break;
+	            }
+	        }  
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		 return line;
+	}
+	
+	public String getAiMessage(int cul){
+		InputStream inputStream = getResources().openRawResource(R.raw.content); 
+		String line = "我不知道你在说什么了.....";
+		try {
+			InputStreamReader inputStreamReader = new InputStreamReader(inputStream, "utf-8");
+			BufferedReader reader = new BufferedReader(inputStreamReader);  
+		    int count = 0;
+		    while ((line = reader.readLine()) != null) {  
+	            count++;
+	            if(count == cul){
+	            	break;
+	            }
+	        }  
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+		 return line;
 	}
 	/**
 	 * 点击发送事件
